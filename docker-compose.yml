@@ -37,23 +37,68 @@
 #      retries: 5
 # ===========================================
 
-version: '3.8'
+# version: '3.8'
 
 services:
   # STUDENT TODO: Define frontend service
   frontend:
-    build: ./frontend
+    # build: ./frontend
     # TODO: Add ports, depends_on
+    build:
+      context: ./frontend
+
+    container_name: react_app
+    restart: always
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    # volumes:
+    #   - ./frontend:/app
+    #   - /app/node_modules
+    command: npm start
 
   # STUDENT TODO: Define backend service
   backend:
-    build: ./backend
+    # build: ./backend
     # TODO: Add ports, environment, depends_on, healthcheck
+    build:
+      context: ./backend
+
+    container_name: express_api
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_USER: admin
+      DB_PASSWORD: 12345678
+      DB_NAME: my-postgre-db
+    depends_on:
+      - postgres
+    # volumes:
+    #   - ./backend:/app
+    #   - /app/node_modules
+    command: npm start
 
   # STUDENT TODO: Define postgres service
   postgres:
+    # image: postgres:latest
     image: postgres:15-alpine
     # TODO: Add environment, ports, volumes, healthcheck
+    # image: postgres:16
+    container_name: postgres_db
+    restart: always
+
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 12345678
+      POSTGRES_DB: my-postgre-db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
 # STUDENT TODO: Define named volumes
 volumes:
