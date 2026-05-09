@@ -14,6 +14,9 @@ function App() {
 
   const fetchTodos = async () => {
     try {
+      
+      console.log('Fetching todos from API...', API_URL);
+
       const res = await fetch(`${API_URL}/api/todos`);
       const data = await res.json();
       setTodos(data);
